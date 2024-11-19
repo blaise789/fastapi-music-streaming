@@ -1,18 +1,22 @@
-# import uuid
-# import bcrypt
-# from fastapi import Depends, HTTPException, Header
-# from database import get_db
-# from middleware.auth_middleware import auth_middleware
-from .models import *
-from .pydantic_schemas import *
-from fastapi import APIRouter
-# from sqlalchemy.orm import Session
-# import jwt
-# from sqlalchemy.orm import joinedload
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.ext.asyncio import AsyncSession
+from src.auth.service import AuthService, UserCreateModel, UserLoginModel, Token
+from src.config.database import get_session
 
 auth_router = APIRouter()
+auth_service = AuthService()
 
+@auth_router.post("/signup", response_model=Token, status_code=status.HTTP_201_CREATED)
+async def signup(user_data: UserCreateModel, session: AsyncSession = Depends(get_session)):
+    try:
+        return await auth_service.signup(user_data, session)
+    except HTTPException as e:
+        raise e  
 
-@auth_router.get("/")
-async def hello():
-    return "hello world"
+@auth_router.post("/login", response_model=Token)
+async def login(login_data: UserLoginModel, session: AsyncSession = Depends(get_session)):
+    try:
+        return await auth_service.login(login_data, session)
+    except HTTPException as e:
+        raise e 
+
