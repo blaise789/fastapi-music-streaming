@@ -10,7 +10,7 @@ song_service = SongService()
 @music_router.post("/", response_model=SongResponseModel, status_code=status.HTTP_201_CREATED)
 async def create_song(song_data: SongCreateModel, session: AsyncSession = Depends(get_session)):
     return await song_service.create_song(song_data, session)
-
+    
 @music_router.get("/", response_model=list[SongResponseModel])
 async def get_all_songs(session: AsyncSession = Depends(get_session)):
     return await song_service.get_all_songs(session)

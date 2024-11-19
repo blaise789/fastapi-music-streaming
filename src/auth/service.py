@@ -41,10 +41,13 @@ class AuthService:
         
         hashed_password = self.hash_password(user_data.password)
         new_user = UserModel(username=user_data.username, email=user_data.email, hashed_password=hashed_password)
-
-        
         session.add(new_user)
-        await session.commit()
+        try:
+          await session.commit()
+        except Exception as e:
+          print(e)
+          await session.rollback()
+          raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to create user.")
 
         token_data = {"sub": user_data.username}
         access_token = self.create_access_token(data=token_data)

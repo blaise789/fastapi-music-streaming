@@ -7,6 +7,7 @@ from sqlalchemy.future import select
 class SongService:
 
     async def create_song(self, song_data: SongCreateModel, session: AsyncSession):
+        song_data=song_data.model_dump()
         song = Song(**song_data)
         session.add(song)
         await session.commit()

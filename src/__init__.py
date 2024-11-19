@@ -17,7 +17,7 @@ async def lifespan(fastApi:FastAPI):
     print("application stopped")
     
 app = FastAPI(
-    title="Bookly",
+    title="Music app",
     version=version,
     lifespan=lifespan
 )

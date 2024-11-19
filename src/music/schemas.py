@@ -8,7 +8,7 @@ class SongCreateModel(BaseModel):
     title: str
     artist: Optional[str] = None
     duration: Optional[int] = None
-    release_date: Optional[datetime] = None
+    release_year: Optional[int] = None
     genre: Optional[str] = None
 
     class Config:
@@ -19,7 +19,7 @@ class SongUpdateModel(BaseModel):
     title: Optional[str] = None
     artist: Optional[str] = None
     duration: Optional[int] = None
-    release_date: Optional[datetime] = None
+    release_date: Optional[int] = None
     genre: Optional[str] = None
     is_active: Optional[bool] = None
 
