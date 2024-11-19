@@ -12,9 +12,8 @@ class SongCreateModel(BaseModel):
     genre: Optional[str] = None
 
     class Config:
-        orm_mode = True  # Tells Pydantic to treat this as an ORM model
+        orm_mode = True  
 
-# Model to update an existing song (use this in PUT/PATCH request)
 class SongUpdateModel(BaseModel):
     title: Optional[str] = None
     artist: Optional[str] = None
@@ -24,12 +23,11 @@ class SongUpdateModel(BaseModel):
     is_active: Optional[bool] = None
 
     class Config:
-        orm_mode = True  # Tells Pydantic to treat this as an ORM model
+        orm_mode = True 
 
-# Model to return a song's details (use this in GET requests)
 class SongResponseModel(SongCreateModel):
     id: int
     is_active: bool
 
     class Config:
-        orm_mode = True  # Tells Pydantic to treat this as an ORM model
+        orm_mode = True 
