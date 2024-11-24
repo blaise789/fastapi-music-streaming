@@ -3,6 +3,7 @@ from sqlalchemy import Column, ForeignKey, func
 from sqlmodel import SQLModel, Field, Relationship
 from datetime import datetime
 import sqlalchemy.dialects.postgresql as pg
+from src.auth.models import UserModel
 
 class Song(SQLModel, table=True):
     __tablename__ = "songs"
@@ -13,13 +14,12 @@ class Song(SQLModel, table=True):
     duration: Optional[int] = None
     release_year: Optional[int] = None
     genre: Optional[str] = None
-    file_url: str
+    file_url: Optional[str]=None
     is_active: bool = Field(sa_column=Column(pg.BOOLEAN, default=True))
 
     cover_url: str = Field(sa_column=Column(pg.VARCHAR, default="/static/song_covers/default.png"))
     created_at:datetime=Field(sa_column=Column(pg.TIMESTAMP, default=func.now()))
     updated_at: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=func.now(), onupdate=func.now()))
-    
     album_id: Optional[int] = Field(default=None, sa_column=Column(pg.INTEGER, ForeignKey("albums.id")))
     playlist_id: Optional[int] = Field(default=None,sa_column=Column(pg.INTEGER, ForeignKey("playlists.id")))
     album: Optional["Album"] = Relationship(back_populates="songs")  # Fixed annotation
@@ -40,7 +40,15 @@ class Album(SQLModel, table=True):
 class Playlist(SQLModel,table=True):
     __tablename__ = "playlists"
     id: int = Field(sa_column=Column(pg.INTEGER, primary_key=True, nullable=False, autoincrement=True))
-    title: str = Field(sa_column=Column(pg.VARCHAR(255), nullable=False))
+    name: str = Field(sa_column=Column(pg.VARCHAR(255), nullable=False))
+    description: Optional[str] 
     created_at: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=func.now()))
     updated_at: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=func.now(), onupdate=func.now()))
     songs: List["Song"] = Relationship(back_populates="playlist")  
+class Artist(SQLModel,table=True):
+    __tablename__ = "artists"
+    id: int = Field(sa_column=Column(pg.INTEGER, primary_key=True, nullable=False, autoincrement=True))
+    name: str
+    # songs: List["Song"] = Relationship(back_populates="artist") 
+#  define one to one relationship with the user
+    # user: Optional["UserModel"] = Relationship(back_populates="artist")

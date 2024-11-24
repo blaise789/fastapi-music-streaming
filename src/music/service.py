@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.music.models import Song
-from src.music.schemas import SongCreateModel, SongUpdateModel
+from src.music.models import Playlist, Song
+from src.music.schemas import *
 from fastapi import HTTPException, status
 from sqlalchemy.future import select
 
@@ -39,3 +39,41 @@ class SongService:
         song.is_active = False  # Soft delete
         await session.commit()
         return {"message": "Song successfully deleted"}
+
+    
+    async def create_playlist(self,playlist: PlaylistCreateModel, session: AsyncSession):
+        playlist_data = playlist.model_dump()
+        playlist=Playlist(**playlist_data)
+        session.add(playlist)
+        await session.commit()
+        await session.refresh(playlist)
+        return playlist
+    
+    async def list_playlists(self,session: AsyncSession):
+        result = await session.execute(select(Playlist))
+        playlists = result.scalars().all()
+        return playlists
+    async def get_playlist(self,playlist_id: int, session: AsyncSession):
+        result= await session.execute(select (Playlist).filter(id==playlist_id) )
+        playlist = result.scalar_one_or_none()
+        if not playlist:
+            raise HTTPException(status_code=404, detail="Playlist not found")
+        return playlist
+    
+    async def update_playlist(self,playlist_id: int, updated_playlist: Playlist, session: AsyncSession):
+        playlist = session.get(Playlist, playlist_id)
+        if not playlist:
+            raise HTTPException(status_code=404, detail="Playlist not found")
+        for key, value in updated_playlist.dict(exclude_unset=True).items():
+            setattr(playlist, key, value)
+        session.commit()
+        session.refresh(playlist)
+        return playlist
+    
+    async def delete_playlist(self,playlist_id: int, session: AsyncSession):
+        playlist = session.get(Playlist, playlist_id)
+        if not playlist:
+            raise HTTPException(status_code=404, detail="Playlist not found")
+        session.delete(playlist)
+        session.commit()
+        return {"message": "Playlist deleted successfully"}

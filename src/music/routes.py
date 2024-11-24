@@ -30,21 +30,21 @@ async def delete_song(song_id: int, session: AsyncSession = Depends(get_session)
     return await song_service.delete_song(song_id, session)
 
 @music_router.post("/playlists/", response_model=Playlist)
-def create_playlist(playlist: PlaylistCreateModel, session: AsyncSession = Depends(get_session)):
-    return create_playlist(playlist, session)
+async def create_playlist(playlist: PlaylistCreateModel, session: AsyncSession = Depends(get_session)):
+    return await song_service.create_playlist(playlist, session)
 
 @music_router.get("/playlists/", response_model=list[Playlist])
-def list_playlists(session: AsyncSession = Depends(get_session)):
-    return list_playlists(session)
+async def list_playlists(session: AsyncSession = Depends(get_session)):
+    return await song_service.list_playlists(session)
 
 @music_router.get("/playlists/{playlist_id}", response_model=Playlist)
-def get_playlist(playlist_id: int, session:AsyncSession = Depends(get_session)):
-    return get_playlist(playlist_id, session)
+async def get_playlist(playlist_id: int, session:AsyncSession = Depends(get_session)):
+    return await song_service.get_playlist(playlist_id, session)
 
 @music_router.put("/playlists/{playlist_id}", response_model=Playlist)
-def update_playlist(playlist_id: int, updated_playlist: PlaylistUpdateModel, session: AsyncSession = Depends(get_session)):
-    return update_playlist(playlist_id, updated_playlist, session)
+async def update_playlist(playlist_id: int, updated_playlist: PlaylistUpdateModel, session: AsyncSession = Depends(get_session)):
+    return await song_service.update_playlist(playlist_id, updated_playlist, session)
 
 @music_router.delete("/playlists/{playlist_id}")
-def delete_playlist(playlist_id: int, session: AsyncSession = Depends(get_session)):
-    return delete_playlist(playlist_id, session)
+async def delete_playlist(playlist_id: int, session: AsyncSession = Depends(get_session)):
+    return await song_service.delete_playlist(playlist_id, session)
