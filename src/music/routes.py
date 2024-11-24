@@ -1,8 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
+from src.music.models import Playlist
 from src.music.service import SongService
 from src.music.schemas import SongCreateModel, SongUpdateModel, SongResponseModel
 from src.config.database import get_session
+from .schemas import PlaylistCreateModel,PlaylistUpdateModel
 
 music_router = APIRouter()
 song_service = SongService()
@@ -26,3 +28,23 @@ async def update_song(song_id: int, song_data: SongUpdateModel, session: AsyncSe
 @music_router.delete("/{song_id}", response_model=dict)
 async def delete_song(song_id: int, session: AsyncSession = Depends(get_session)):
     return await song_service.delete_song(song_id, session)
+
+@music_router.post("/playlists/", response_model=Playlist)
+def create_playlist(playlist: PlaylistCreateModel, session: AsyncSession = Depends(get_session)):
+    return create_playlist(playlist, session)
+
+@music_router.get("/playlists/", response_model=list[Playlist])
+def list_playlists(session: AsyncSession = Depends(get_session)):
+    return list_playlists(session)
+
+@music_router.get("/playlists/{playlist_id}", response_model=Playlist)
+def get_playlist(playlist_id: int, session:AsyncSession = Depends(get_session)):
+    return get_playlist(playlist_id, session)
+
+@music_router.put("/playlists/{playlist_id}", response_model=Playlist)
+def update_playlist(playlist_id: int, updated_playlist: PlaylistUpdateModel, session: AsyncSession = Depends(get_session)):
+    return update_playlist(playlist_id, updated_playlist, session)
+
+@music_router.delete("/playlists/{playlist_id}")
+def delete_playlist(playlist_id: int, session: AsyncSession = Depends(get_session)):
+    return delete_playlist(playlist_id, session)
