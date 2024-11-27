@@ -29,6 +29,9 @@ async def update_song(song_id: int, song_data: SongUpdateModel, session: AsyncSe
 async def delete_song(song_id: int, session: AsyncSession = Depends(get_session)):
     return await song_service.delete_song(song_id, session)
 
+@music_router.post('/{song_id}/add_to_playlist/{playlist_id}')
+async def add_song_to_playlist(song_id: int, playlist_id: int, session: AsyncSession = Depends(get_session)):
+    return await song_service.add_song_to_playlist(song_id, playlist_id, session)
 @music_router.post("/playlists/", response_model=Playlist)
 async def create_playlist(playlist: PlaylistCreateModel, session: AsyncSession = Depends(get_session)):
     return await song_service.create_playlist(playlist, session)

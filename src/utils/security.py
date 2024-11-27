@@ -3,15 +3,14 @@ from datetime import datetime, timedelta
 import jwt
 from fastapi import HTTPException
 
-SECRET_KEY = "your-secret-key"  # Replace with a secret key
+SECRET_KEY = "your-secret-key"  
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30  # Token expiration time
+ACCESS_TOKEN_EXPIRE_MINUTES = 30  
 
 def hash_password(password: str) -> str:
     """
     Hash a plain text password using bcrypt.
     """
-    # Generate a salt and hash the password using bcrypt
     salt = bcrypt.gensalt()
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
     return hashed_password.decode('utf-8')  # Return the hashed password as a string

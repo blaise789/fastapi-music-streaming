@@ -3,6 +3,7 @@ from src.music.models import Playlist, Song
 from src.music.schemas import *
 from fastapi import HTTPException, status
 from sqlalchemy.future import select
+from sqlalchemy.orm import joinedload
 
 class SongService:
 
@@ -12,6 +13,7 @@ class SongService:
         session.add(song)
         await session.commit()
         await session.refresh(song)
+        print(song)
         return song
 
     async def get_all_songs(self, session: AsyncSession):
@@ -48,15 +50,22 @@ class SongService:
         await session.commit()
         await session.refresh(playlist)
         return playlist
-    
+    async def add_song_to_playlist(self, song_id, playlist_id,session:AsyncSession):
+        playlist:Playlist = await self.get_playlist(playlist_id, session)
+        song = await self.get_song(song_id, session)
+        print(playlist.songs)
+        playlist.songs.append(song)
+        await session.commit()
+        return {"message": "Song added to playlist successfully"}
     async def list_playlists(self,session: AsyncSession):
         result = await session.execute(select(Playlist))
         playlists = result.scalars().all()
         return playlists
     async def get_playlist(self,playlist_id: int, session: AsyncSession):
-        result= await session.execute(select (Playlist).filter(id==playlist_id) )
-        playlist = result.scalar_one_or_none()
-        if not playlist:
+        result= await session.execute(select(Playlist).options(joinedload(Playlist.songs)).filter(Playlist.id==playlist_id) )
+        playlist =result.scalars().first()
+        print(playlist.songs)
+        if  playlist is None:
             raise HTTPException(status_code=404, detail="Playlist not found")
         return playlist
     

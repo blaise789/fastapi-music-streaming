@@ -23,9 +23,15 @@ class SongUpdateModel(BaseModel):
 
    
 
-class SongResponseModel(SongCreateModel):
-    id: int
-    is_active: bool
+class SongResponseModel(BaseModel):
+    title: Optional[str] = None
+    artist: Optional[str] = None
+    duration: Optional[int] = None
+    release_date: Optional[int] = None
+    genre: Optional[str] = None
+    is_active: Optional[bool] = None
+    # id: int
+    # is_active: bool
 
 class PlaylistCreateModel(BaseModel):
     name: str

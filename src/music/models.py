@@ -16,7 +16,6 @@ class Song(SQLModel, table=True):
     genre: Optional[str] = None
     file_url: Optional[str]=None
     is_active: bool = Field(sa_column=Column(pg.BOOLEAN, default=True))
-
     cover_url: str = Field(sa_column=Column(pg.VARCHAR, default="/static/song_covers/default.png"))
     created_at:datetime=Field(sa_column=Column(pg.TIMESTAMP, default=func.now()))
     updated_at: datetime = Field(sa_column=Column(pg.TIMESTAMP, default=func.now(), onupdate=func.now()))
@@ -52,3 +51,4 @@ class Artist(SQLModel,table=True):
     # songs: List["Song"] = Relationship(back_populates="artist") 
 #  define one to one relationship with the user
     # user: Optional["UserModel"] = Relationship(back_populates="artist")
+    
